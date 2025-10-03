@@ -1,7 +1,7 @@
 
 # Chat Application (Java, TCP Sockets)
 
-## 📌 Overview
+## Overview
 This project implements a **multi-client chat application** using Java sockets. It was built as part of a Computer Networks course project, modeled after Kurose & Ross’s socket programming examples and extended with custom features such as usernames, connection requests, and chat history displays.  
 
 The system consists of three main files:  
@@ -11,7 +11,7 @@ The system consists of three main files:
 
 ---
 
-## ⚡ Challenges Faced
+## Challenges Faced
 
 ### 1. Java I/O Streams Deadlock
 We discovered that if both client and server created their `ObjectInputStream` first, the connection would freeze. The fix was to always create the `ObjectOutputStream` before the `ObjectInputStream`.
@@ -30,7 +30,7 @@ We wanted a real chat-like interface where the screen is cleared and the full hi
 
 ---
 
-## 🔧 Features and File Responsibilities
+## Features and File Responsibilities
 
 ### `Message.java`
 - Defines a serializable `Message` class used for all communication.  
@@ -56,22 +56,6 @@ We wanted a real chat-like interface where the screen is cleared and the full hi
 - Maintains `chatHistory`, redraws the full conversation, and always shows `You:` at the bottom for new input.  
 
 ---
+## Existing Issues
 
-## 🚀 How to Run
-1. Compile all files:
-   ```bash
-   javac *.java
-   ```
-2. Start the server:
-   ```bash
-   java Server
-   ```
-3. Run one or more clients (in IntelliJ allow parallel run or use multiple terminals):
-   ```bash
-   java Client
-   ```
-
----
-
-## ✅ Summary
-This project evolved from a basic TCP socket demo into a fully functional chat application with persistent sessions, usernames, and a terminal-based chat UI. We overcame synchronization challenges, I/O stream ordering, and user experience issues to deliver a working system closely tied to networking fundamentals.
+There are many existing issues with the user interface, which has honestly been the hardest part of this project. Trying to display incoming connections, accept them and also display message history has been extremely difficult and buggy but I am still working to fix it.
