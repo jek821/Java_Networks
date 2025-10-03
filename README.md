@@ -1,77 +1,55 @@
 
 # Chat Application (Java, TCP Sockets)
 
-## 📌 Overview
-This project implements a **multi-client chat application** using Java sockets. It was built as part of a Computer Networks course project, modeled after Kurose & Ross’s socket programming examples and extended with custom features such as usernames, connection requests, and chat history displays.  
+## Overview
+I built a multi-client chat application using Java sockets. This project was part of a Computer Networks course, inspired by Kurose & Ross’s socket programming examples. I extended the design to support usernames, connection requests, and basic chat history.  
 
-The system consists of three main files:  
-- `Server.java` – multi-threaded server that manages clients and routes messages.  
-- `Client.java` – client application with username setup, `/list` command, and private chats.  
-- `Message.java` – serializable data structure used for all communication.  
-
----
-
-## ⚡ Challenges Faced
-
-### 1. Java I/O Streams Deadlock
-We discovered that if both client and server created their `ObjectInputStream` first, the connection would freeze. The fix was to always create the `ObjectOutputStream` before the `ObjectInputStream`.
-
-### 2. Client Requests Not Showing Immediately
-At first, connection requests (`CONNECT_REQUEST`) only appeared to the recipient after they typed something. This was due to input blocking in the main loop. We solved it by using a **queue system**: the listener thread enqueues requests, and the main loop processes them immediately before re-prompting.
-
-### 3. /list Command
-Initially, `/list` only worked for one client because the server was printing the client list to its own console instead of returning it as a message. We fixed this by sending back a `SYSTEM_LIST` message that the client displays correctly.
-
-### 4. Maintaining Persistent Chats
-After a connection was accepted, we needed a way to keep the conversation persistent. We introduced the concept of `activePartnerId` and changed the input loop so all typed messages automatically route to that partner until the session ends.
-
-### 5. Clean Chat Display
-We wanted a real chat-like interface where the screen is cleared and the full history is redrawn. This required ANSI escape codes and maintaining a `chatHistory` list that gets re-rendered on each new message.
+The system consists of three files:  
+- `Server.java` – runs as a multi-threaded server that accepts clients and forwards messages.  
+- `Client.java` – the program each user runs to connect, request sessions, and chat.  
+- `Message.java` – a serializable class that defines the format of messages exchanged between clients and the server.  
 
 ---
 
-## 🔧 Features and File Responsibilities
+## Challenges Faced
+
+### 1. Stream Initialization
+One of the earliest problems I ran into was that if both sides created their input streams first, the program froze. I learned that output streams had to be created before input streams to avoid deadlock.
+
+### 2. Connection Requests
+Requests to connect did not appear until the recipient typed something. This happened because the program was blocked waiting for input. I solved this by restructuring how input and messages were handled, so requests could be processed right away.
+
+### 3. Listing Clients
+When I first tried to list clients, the output only showed on the server console. I reworked the logic so that the client receives the list as a message and displays it properly.
+
+### 4. Keeping Chats Open
+After a connection was accepted, I needed a way to keep the chat session going without repeatedly asking who to message. I added state to track the current partner so that all messages flow directly between the two clients until the session ends.
+
+### 5. Displaying Messages
+I wanted the chat to look more like a conversation. I experimented with clearing the terminal and redrawing the conversation history so the interface was cleaner, though this introduced new difficulties.
+
+---
+
+## Features and File Responsibilities
 
 ### `Message.java`
-- Defines a serializable `Message` class used for all communication.  
-- Fields include: `type`, `text`, `from`, `to`, and `created`.  
-- Types: `"CHAT"`, `"CONNECT_REQUEST"`, `"CONNECT_ACCEPT"`, `"CONNECT_DENY"`, `"SYSTEM"`, `"SYSTEM_LIST"`, `"SYSTEM_ERROR"`.  
+- Defines the format for all messages exchanged in the system.  
+- Supports message types for system commands, connection requests, accept/deny responses, and chat messages.  
 
 ### `Server.java`
-- Accepts incoming socket connections and assigns each client a unique ID (`Client1`, `Client2`, …).  
-- Stores all connected clients in a `ConcurrentHashMap`.  
-- Routes messages based on their type:  
-  - `/list` requests return a `SYSTEM_LIST` message to the requester.  
-  - `CONNECT_REQUEST` forwards to the requested client.  
-  - `CONNECT_ACCEPT` and `CONNECT_DENY` complete the handshake.  
-  - `CHAT` messages are routed to the correct partner.  
-- Logs all actions (connections, disconnections, spoof attempts).  
+- Accepts incoming connections from clients.  
+- Assigns a unique ID to each client.  
+- Keeps track of connected clients and forwards messages between them.  
+- Handles listing of clients, connection requests, and relaying of chat messages.  
 
 ### `Client.java`
-- Prompts the user for a username on startup.  
-- Handles three major states: idle (no partner), connection requests, and active chat.  
-- `/list` command shows all currently connected clients.  
-- Connection requests appear immediately with a yes/no prompt.  
-- Accepted connections open a persistent chat session.  
-- Maintains `chatHistory`, redraws the full conversation, and always shows `You:` at the bottom for new input.  
+- Prompts for a username when started.  
+- Allows a user to list connected clients or request a connection with a specific client.  
+- Displays incoming connection requests and asks the user to accept or deny them.  
+- Once connected, maintains a direct chat session and displays conversation history.  
 
 ---
 
-## 🚀 How to Run
-1. Compile all files:
-   ```bash
-   javac *.java
-   ```
-2. Start the server:
-   ```bash
-   java Server
-   ```
-3. Run one or more clients (in IntelliJ allow parallel run or use multiple terminals):
-   ```bash
-   java Client
-   ```
+## Existing Issues
 
----
-
-## ✅ Summary
-This project evolved from a basic TCP socket demo into a fully functional chat application with persistent sessions, usernames, and a terminal-based chat UI. We overcame synchronization challenges, I/O stream ordering, and user experience issues to deliver a working system closely tied to networking fundamentals.
+The user interface is still buggy and has been the hardest part of this project. Trying to balance incoming requests, user prompts, and displaying chat history cleanly has been extremely difficult. Clearing the screen and redrawing history often causes awkward behavior. I am still working to fix these issues to make the interface smoother and more reliable.
