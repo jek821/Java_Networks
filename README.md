@@ -2,7 +2,11 @@
 # Chat Application (Java, TCP Sockets)
 
 ## Overview
+<<<<<<< HEAD
 I built a multi-client chat application using Java sockets. This project was part of a Computer Networks course, inspired by Kurose & Ross’s socket programming examples. I extended the design to support usernames, connection requests, and basic chat history.  
+=======
+This project implements a **multi-client chat application** using Java sockets. It was built as part of a Computer Networks course project, modeled after Kurose & Ross’s socket programming examples and extended with custom features such as usernames, connection requests, and chat history displays.  
+>>>>>>> f9937123bdb90b288c93d7b8eb54c969e7cb92df
 
 The system consists of three files:  
 - `Server.java` – runs as a multi-threaded server that accepts clients and forwards messages.  
@@ -49,7 +53,12 @@ I wanted the chat to look more like a conversation. I experimented with clearing
 - Once connected, maintains a direct chat session and displays conversation history.  
 
 ---
+## Existing Issues
 
+<<<<<<< HEAD
 ## Existing Issues
 
 The user interface is still buggy and has been the hardest part of this project. Trying to balance incoming requests, user prompts, and displaying chat history cleanly has been extremely difficult. Clearing the screen and redrawing history often causes awkward behavior. I am still working to fix these issues to make the interface smoother and more reliable.
+=======
+There are many existing issues with the user interface, which has honestly been the hardest part of this project. Trying to display incoming connections, accept them and also display message history has been extremely difficult and buggy but I am still working to fix it.
+>>>>>>> f9937123bdb90b288c93d7b8eb54c969e7cb92df
